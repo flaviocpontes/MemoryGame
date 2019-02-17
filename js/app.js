@@ -1,14 +1,31 @@
-/*
- * Create a list that holds all of your cards
- */
+let gameState = {
+    board: [
+        {symbolClass: "fa-diamond", matched: false, revealed: false},
+        {symbolClass: "fa-diamond", matched: false, revealed: false},
+        {symbolClass: "fa-paper-plane-o", matched: false, revealed: false},
+        {symbolClass: "fa-paper-plane-o", matched: false, revealed: false},
+        {symbolClass: "fa-anchor", matched: false, revealed: false},
+        {symbolClass: "fa-anchor", matched: false, revealed: false},
+        {symbolClass: "fa-bolt", matched: false, revealed: false},
+        {symbolClass: "fa-bolt", matched: false, revealed: false},
+        {symbolClass: "fa-cube", matched: false, revealed: false},
+        {symbolClass: "fa-cube", matched: false, revealed: false},
+        {symbolClass: "fa-leaf", matched: false, revealed: false},
+        {symbolClass: "fa-leaf", matched: false, revealed: false},
+        {symbolClass: "fa-bicycle", matched: false, revealed: false},
+        {symbolClass: "fa-bicycle", matched: false, revealed: false},
+        {symbolClass: "fa-bomb", matched: false, revealed: false},
+        {symbolClass: "fa-bomb", matched: false, revealed: false}
+    ],
+    firstCard: null,
+    secondCard: null
+};
 
+function appendCardToBoard(board, card, index){
+    let cardElement = '<li id="card' + index + '" class="card"><i class="fa ' + card.symbolClass + '"></i></li>';
 
-/*
- * Display the cards on the page
- *   - shuffle the list of cards using the provided "shuffle" method below
- *   - loop through each card and create its HTML
- *   - add each card's HTML to the page
- */
+    board.append(cardElement)
+}
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
@@ -25,6 +42,16 @@ function shuffle(array) {
     return array;
 }
 
+function initBoard(gamestate) {
+    let board = $('.deck');
+    shuffle(gameState.board);
+
+    gamestate.board.forEach(function (card, index) {
+        appendCardToBoard(board, card, index)
+    })
+}
+
+initBoard(gameState);
 
 /*
  * set up the event listener for a card. If a card is clicked:
