@@ -42,13 +42,30 @@ function shuffle(array) {
     return array;
 }
 
+function updateBoard(clickedCard) {
+    let cardIndex = Number(clickedCard.id.slice(4,6));
+    let stateCard = gameState.board[cardIndex];
+    stateCard.revealed = true;
+
+    if (stateCard.revealed === true) {
+        $(clickedCard).addClass("open show");
+    }
+}
+
+
 function initBoard(gamestate) {
     let board = $('.deck');
     shuffle(gameState.board);
 
     gamestate.board.forEach(function (card, index) {
         appendCardToBoard(board, card, index)
-    })
+    });
+
+    board.on('click', 'li', function(){
+        let clickedCard = $(this)[0];
+        updateBoard(clickedCard);
+    });
+
 }
 
 initBoard(gameState);
