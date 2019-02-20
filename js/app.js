@@ -47,6 +47,7 @@ function shuffle(array) {
 
 function revealCard(clickedCard, stateCard) {
     if (!stateCard.revealed === true) {
+        gameState.moves++;
         stateCard.revealed = true;
         $(clickedCard).addClass("open show");
     }
@@ -57,16 +58,33 @@ function hideCard(card) {
     $($('#card' + card.index)[0]).removeClass("open show");
 }
 
-
-function populateBoard(gamestate, board) {
+function resetState(gameState) {
     shuffle(gameState.board);
-    gamestate.board.forEach(function (card, index) {
+    gameState.board.forEach(function (card) {
+        card.revealed = false;
+        card.matched = false;
+    });
+}
+
+function removeCardsFromBoard(board) {
+
+}
+
+
+function populateBoard(gameState, board) {
+    gameState.board.forEach(function (card, index) {
         appendCardToBoard(board, card, index)
     });
 }
 
-function secondCard(gamestate) {
-    return gamestate.revealed !== null;
+function resetBoard(gameState, board) {
+    resetState(gameState);
+    removeCardsFromBoard(board);
+    populateBoard(gameState, board);
+}
+
+function secondCard(gameState) {
+    return gameState.revealed !== null;
 }
 
 function matchCards(stateCard, revealedCard) {
@@ -83,10 +101,27 @@ function hideCards(revealedCard, stateCard) {
     }, config.hideDelay);
 }
 
+function allCardsMatched(gamestate) {
+    result = true;
+    gamestate.board.forEach(function (card) {
+        if (!card.matched) {
+            result = false;
+        }
+    });
+    return result;
+}
+
+function gameOver() {
+    $('.overlay').css('display', 'block');
+}
+
 function try_match(gamestate, stateCard) {
     revealedCard = gamestate.revealed;
     if (stateCard.symbolClass === revealedCard.symbolClass) {
         matchCards(stateCard, revealedCard);
+        if (allCardsMatched(gamestate)){
+            gameOver();
+        }
     } else {
         hideCards(revealedCard, stateCard);
     }
@@ -95,7 +130,7 @@ function try_match(gamestate, stateCard) {
 function initBoard(gamestate) {
     let board = $('.deck');
 
-    populateBoard(gamestate, board);
+    resetBoard(gamestate, board);
 
     board.on('click', 'li', function(){
         let boardCard = $(this)[0];
