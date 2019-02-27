@@ -21,7 +21,8 @@ let gameState = {
         {symbolClass: "fa-bomb", matched: false, revealed: false, index: null},
         {symbolClass: "fa-bomb", matched: false, revealed: false, index: null}
     ],
-    revealed: null
+    revealed: null,
+    moves: 0
 };
 
 function appendCardToBoard(board, card, index){
@@ -64,10 +65,12 @@ function resetState(gameState) {
         card.revealed = false;
         card.matched = false;
     });
+    gameState.revealed = false;
+    gameState.moves = 0;
 }
 
 function removeCardsFromBoard(board) {
-
+    board.empty()
 }
 
 
@@ -77,14 +80,14 @@ function populateBoard(gameState, board) {
     });
 }
 
-function resetBoard(gameState, board) {
+function resetGame(gameState, board) {
     resetState(gameState);
     removeCardsFromBoard(board);
     populateBoard(gameState, board);
 }
 
 function secondCard(gameState) {
-    return gameState.revealed !== null;
+    return gameState.revealed;
 }
 
 function matchCards(stateCard, revealedCard) {
@@ -101,9 +104,9 @@ function hideCards(revealedCard, stateCard) {
     }, config.hideDelay);
 }
 
-function allCardsMatched(gamestate) {
+function allCardsMatched(gameState) {
     result = true;
-    gamestate.board.forEach(function (card) {
+    gameState.board.forEach(function (card) {
         if (!card.matched) {
             result = false;
         }
@@ -111,34 +114,59 @@ function allCardsMatched(gamestate) {
     return result;
 }
 
-function gameOver() {
+function updateModalText() {
+
+}
+
+function displayModal() {
     $('.overlay').css('display', 'block');
 }
 
-function try_match(gamestate, stateCard) {
-    revealedCard = gamestate.revealed;
+function hideModal() {
+    $('.overlay').css('display', 'none');
+}
+
+function gameOver(gameState) {
+
+    $('#reset').click(function(){
+        let board = $('.deck');
+        resetGame(gameState, board);
+        hideModal();
+    });
+
+    $('#hide-popup').click(function(){
+        hideModal();
+    });
+
+    updateModalText();
+    displayModal();
+}
+
+function try_match(gameState, stateCard) {
+    revealedCard = gameState.revealed;
     if (stateCard.symbolClass === revealedCard.symbolClass) {
         matchCards(stateCard, revealedCard);
-        if (allCardsMatched(gamestate)){
-            gameOver();
+        if (allCardsMatched(gameState)){
+            gameOver(gameState);
         }
     } else {
         hideCards(revealedCard, stateCard);
     }
 }
 
-function initBoard(gamestate) {
+function initBoard(gameState) {
     let board = $('.deck');
 
-    resetBoard(gamestate, board);
+    resetGame(gameState, board);
 
     board.on('click', 'li', function(){
         let boardCard = $(this)[0];
         let stateCard = gameState.board[Number(boardCard.id.slice(4, 6))];
         revealCard(boardCard, stateCard);
-        if (secondCard(gamestate)) {
-            try_match(gamestate, stateCard);
-            gamestate.revealed = null;
+        if (secondCard(gameState)) {
+            try_match(gameState, stateCard);
+            gameState.revealed = null;
+            gameState.moves++;
         } else {
             gameState.revealed = stateCard;
         }

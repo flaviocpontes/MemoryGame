@@ -13,7 +13,10 @@
     <div class="overlay">
         <div class="vertical-aligner">
             <div class="modal-content">
-                <h3>Congratulations!</h3>
+                <h3>Congratulations, you won!</h3>
+                <p>You made <span id="movesLeft">xx</span> moves in <span id="gameTime"></span> seconds and scored <span id="finalScore"></span> stars!</p>
+                <p>Would you like to play again?</p>
+                <p><button id="reset">YES!</button><button id="hide-popup">NO</button>  </p>
             </div>
         </div>
     </div>
@@ -25,9 +28,9 @@
 
         <section class="score-panel">
         	<ul class="stars">
-        		<li><i class="fa fa-star"></i></li>
-        		<li><i class="fa fa-star"></i></li>
-        		<li><i class="fa fa-star"></i></li>
+        		<li><i class="fa fa-star-o"></i></li>
+        		<li><i class="fa fa-star-o"></i></li>
+        		<li><i class="fa fa-star-o"></i></li>
         	</ul>
 
         	<span class="moves">3</span> Moves

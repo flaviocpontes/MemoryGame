@@ -33,6 +33,11 @@ h1 {
     font-weight: 300;
 }
 
+button {
+    padding: 5px;
+    margin: 0 12px;
+}
+
 /*
  * Styles for the deck of cards
  */
