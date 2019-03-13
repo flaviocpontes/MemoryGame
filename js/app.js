@@ -35,7 +35,7 @@ function appendCardToBoard(board, card, index){
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex;
+    let currentIndex = array.length, temporaryValue, randomIndex;
 
     while (currentIndex !== 0) {
         randomIndex = Math.floor(Math.random() * currentIndex);
@@ -152,7 +152,7 @@ function updateBoardTime(gameState) {
 }
 
 function updateBoardScore(score) {
-    var scoreStars = $('.score');
+    let scoreStars = $('.score');
     if (score < 3) {
         scoreStars.eq(2).addClass('fa-star-o').removeClass('fa-star');
         scoreStars.eq(5).addClass('fa-star-o').removeClass('fa-star');
@@ -161,25 +161,19 @@ function updateBoardScore(score) {
         scoreStars.eq(1).addClass('fa-star-o').removeClass('fa-star');
         scoreStars.eq(4).addClass('fa-star-o').removeClass('fa-star');
     }
-    if (score < 1) {
-        scoreStars.eq(0).addClass('fa-star-o').removeClass('fa-star');
-        scoreStars.eq(3).addClass('fa-star-o').removeClass('fa-star');
-    }
 }
 
 function resetScoreBoard() {
-    for (var i = 0; i < 6; i++) {$('.score').eq(i).removeClass('fa-star-o').addClass('fa-star');}
+    for (let i = 0; i < 6; i++) {$('.score').eq(i).removeClass('fa-star-o').addClass('fa-star');}
 }
 
 function calculateScore(moves) {
     const MAX = 12;
     const MED = 18;
-    const MIN = 24;
 
     if (moves < MAX) {return 3}
     if (moves < MED) {return 2}
-    if (moves < MIN) {return 1}
-    return 0;
+    return 1;
 }
 
 function initBoard(gameState) {

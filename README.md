@@ -18,8 +18,7 @@ The scoring is based in the number of moves takes to finish the game and is as f
 
 - 3 Stars - Less than 12 moves;
 - 2 Stars - Between 12 and 17 moves;
-- 1 Star - Between 18 and 23 moves;
-- No stars - 24 or more moves.
+- 1 Star - 18 or more moves;
 
 ## Restarting the game
 
