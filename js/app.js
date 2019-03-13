@@ -184,6 +184,7 @@ function initBoard(gameState) {
     board.on('click', 'li', function(){
         let boardCard = $(this)[0];
         let stateCard = gameState.board[Number(boardCard.id.slice(4, 6))];
+        if (stateCard === gameState.revealed) {return}
 
         if (gameState.timer === null) {
             gameState.gameTime = 0;
