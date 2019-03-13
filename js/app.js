@@ -48,18 +48,6 @@ function shuffle(array) {
     return array;
 }
 
-function revealCard(clickedCard, stateCard) {
-    if (!stateCard.revealed === true) {
-        stateCard.revealed = true;
-        $(clickedCard).addClass("open show");
-    }
-}
-
-function hideCard(card) {
-    card.revealed = false;
-    $($('#card' + card.index)[0]).removeClass("open show");
-}
-
 function resetState(gameState) {
     shuffle(gameState.board);
     gameState.board.forEach(function (card) {
@@ -90,8 +78,9 @@ function resetGame(gameState, board) {
     resetState(gameState);
     removeCardsFromBoard(board);
     populateBoard(gameState, board);
-    updateMoves(gameState);
+    updateBoardMoves(gameState);
     resetTimer(gameState);
+    resetScoreBoard();
 }
 
 function isSecondCard(gameState) {
@@ -122,8 +111,21 @@ function allCardsAreMatched(gameState) {
     return result;
 }
 
-function updateModalText() {
+function gameOver() {
+    resetTimer();
+    displayModal();
+}
 
+function revealCard(clickedCard, stateCard) {
+    if (!stateCard.revealed === true) {
+        stateCard.revealed = true;
+        $(clickedCard).addClass("open show");
+    }
+}
+
+function hideCard(card) {
+    card.revealed = false;
+    $($('#card' + card.index)[0]).removeClass("open show");
 }
 
 function displayModal() {
@@ -134,18 +136,43 @@ function hideModal() {
     $('.overlay').css('display', 'none');
 }
 
-function gameOver() {
-    resetTimer();
-    updateModalText();
-    displayModal();
-}
-
-function updateMoves(gameState) {
+function updateBoardMoves(gameState) {
     $('.moves').text(gameState.moves);
 }
 
 function updateBoardTime(gameState) {
     $('.timer').text(gameState.gameTime);
+}
+
+function updateBoardScore(score) {
+    var scoreStars = $('.score');
+    if (score < 3) {
+        scoreStars.eq(2).addClass('fa-star-o').removeClass('fa-star');
+        scoreStars.eq(5).addClass('fa-star-o').removeClass('fa-star');
+    }
+    if (score < 2) {
+        scoreStars.eq(1).addClass('fa-star-o').removeClass('fa-star');
+        scoreStars.eq(4).addClass('fa-star-o').removeClass('fa-star');
+    }
+    if (score < 1) {
+        scoreStars.eq(0).addClass('fa-star-o').removeClass('fa-star');
+        scoreStars.eq(3).addClass('fa-star-o').removeClass('fa-star');
+    }
+}
+
+function resetScoreBoard() {
+    for (var i = 0; i < 6; i++) {$('.score').eq(i).removeClass('fa-star-o').addClass('fa-star');}
+}
+
+function calculateScore(moves) {
+    const MAX = 12;
+    const MED = 18;
+    const MIN = 24;
+
+    if (moves < MAX) {return 3}
+    if (moves < MED) {return 2}
+    if (moves < MIN) {return 1}
+    return 0;
 }
 
 function initBoard(gameState) {
@@ -177,7 +204,9 @@ function initBoard(gameState) {
             }
             gameState.revealed = null;
             gameState.moves++;
-            updateMoves(gameState);
+            gameState.score = calculateScore(gameState.moves);
+            updateBoardScore(gameState.score);
+            updateBoardMoves(gameState);
         } else {
             gameState.revealed = stateCard;
         }
