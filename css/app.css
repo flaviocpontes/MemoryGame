@@ -96,13 +96,13 @@ button {
     margin-bottom: 10px;
 }
 
-.score-panel .stars {
+.stars {
     padding: 0;
     display: inline-block;
     margin: 0 5px 0 0;
 }
 
-.score-panel .stars li {
+.stars li {
     list-style: none;
     display: inline-block;
 }
@@ -110,6 +110,10 @@ button {
 .score-panel .restart {
     float: right;
     cursor: pointer;
+}
+
+.final {
+    font-size: larger;
 }
 
 .overlay {

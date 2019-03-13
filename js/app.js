@@ -22,7 +22,9 @@ let gameState = {
         {symbolClass: "fa-bomb", matched: false, revealed: false, index: null}
     ],
     revealed: null,
-    moves: 0
+    moves: 0,
+    timer: null,
+    gameTime: 0
 };
 
 function appendCardToBoard(board, card, index){
@@ -48,7 +50,6 @@ function shuffle(array) {
 
 function revealCard(clickedCard, stateCard) {
     if (!stateCard.revealed === true) {
-        gameState.moves++;
         stateCard.revealed = true;
         $(clickedCard).addClass("open show");
     }
@@ -80,13 +81,20 @@ function populateBoard(gameState, board) {
     });
 }
 
+function resetTimer() {
+    clearInterval(gameState.timer);
+    gameState.timer = null;
+}
+
 function resetGame(gameState, board) {
     resetState(gameState);
     removeCardsFromBoard(board);
     populateBoard(gameState, board);
+    updateMoves(gameState);
+    resetTimer(gameState);
 }
 
-function secondCard(gameState) {
+function isSecondCard(gameState) {
     return gameState.revealed;
 }
 
@@ -104,7 +112,7 @@ function hideCards(revealedCard, stateCard) {
     }, config.hideDelay);
 }
 
-function allCardsMatched(gameState) {
+function allCardsAreMatched(gameState) {
     result = true;
     gameState.board.forEach(function (card) {
         if (!card.matched) {
@@ -126,32 +134,18 @@ function hideModal() {
     $('.overlay').css('display', 'none');
 }
 
-function gameOver(gameState) {
-
-    $('#reset').click(function(){
-        let board = $('.deck');
-        resetGame(gameState, board);
-        hideModal();
-    });
-
-    $('#hide-popup').click(function(){
-        hideModal();
-    });
-
+function gameOver() {
+    resetTimer();
     updateModalText();
     displayModal();
 }
 
-function try_match(gameState, stateCard) {
-    revealedCard = gameState.revealed;
-    if (stateCard.symbolClass === revealedCard.symbolClass) {
-        matchCards(stateCard, revealedCard);
-        if (allCardsMatched(gameState)){
-            gameOver(gameState);
-        }
-    } else {
-        hideCards(revealedCard, stateCard);
-    }
+function updateMoves(gameState) {
+    $('.moves').text(gameState.moves);
+}
+
+function updateBoardTime(gameState) {
+    $('.timer').text(gameState.gameTime);
 }
 
 function initBoard(gameState) {
@@ -162,14 +156,41 @@ function initBoard(gameState) {
     board.on('click', 'li', function(){
         let boardCard = $(this)[0];
         let stateCard = gameState.board[Number(boardCard.id.slice(4, 6))];
+
+        if (gameState.timer === null) {
+            gameState.gameTime = 0;
+            gameState.timer = setInterval(function(){
+                gameState.gameTime++;
+                updateBoardTime(gameState);
+            }, 1000)
+        }
+
         revealCard(boardCard, stateCard);
-        if (secondCard(gameState)) {
-            try_match(gameState, stateCard);
+        if (isSecondCard(gameState)) {
+            if (stateCard.symbolClass === gameState.revealed.symbolClass) {
+                matchCards(stateCard, gameState.revealed);
+                if (allCardsAreMatched(gameState)) {
+                    gameOver();
+                }
+            } else {
+                hideCards(gameState.revealed, stateCard);
+            }
             gameState.revealed = null;
             gameState.moves++;
+            updateMoves(gameState);
         } else {
             gameState.revealed = stateCard;
         }
+    });
+
+    $('.restart').click(function(){
+        let board = $('.deck');
+        resetGame(gameState, board);
+        hideModal();
+    });
+
+    $('#hide-popup').click(function(){
+        hideModal();
     });
 
 }
